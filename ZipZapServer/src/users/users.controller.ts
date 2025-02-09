@@ -5,7 +5,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 @Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(private usersService: UsersService) { }
 
   // Get authenticated user's profile
   @UseGuards(JwtAuthGuard)

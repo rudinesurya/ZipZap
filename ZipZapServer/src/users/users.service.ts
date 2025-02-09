@@ -5,7 +5,7 @@ import { User, UserDocument } from 'src/schemas/User.schema';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) { }
 
   async create(user: Partial<User>): Promise<UserDocument> {
     const createdUser = new this.userModel(user);
