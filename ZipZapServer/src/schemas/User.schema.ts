@@ -13,6 +13,9 @@ export class User {
 
     @Prop({ required: true })
     name: string;
+
+    @Prop({})
+    theme: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

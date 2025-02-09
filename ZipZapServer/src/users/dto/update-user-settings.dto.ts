@@ -6,4 +6,7 @@ export class UpdateUserSettingsDto {
   name?: string;
 
   // Add other settings properties as needed
+  @IsOptional()
+  @IsString()
+  theme?: string;
 }

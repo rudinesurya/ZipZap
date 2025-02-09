@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UnauthorizedException, UseGuards, Request } from '@nestjs/common';
+import { Controller, Post, Body, UnauthorizedException, UseGuards, Request, Get } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt.guard';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -25,7 +25,7 @@ export class AuthController {
 
   // Optional endpoint to retrieve current authenticated user data
   @UseGuards(JwtAuthGuard)
-  @Post('profile')
+  @Get('profile')
   getProfile(@Request() req) {
     return req.user;
   }
