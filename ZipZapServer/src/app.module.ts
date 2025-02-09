@@ -8,8 +8,15 @@ import { RatingsModule } from './ratings/ratings.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
-    MongooseModule.forRoot('mongodb://127.0.0.1/zipzap'),
+    ConfigModule.forRoot({ isGlobal: true }),
+    MongooseModule.forRootAsync({
+      useFactory: async () => {
+        // console.log('MONGO_URI from process.env:', process.env.MONGO_URI);
+        return {
+          uri: process.env.MONGO_URI,
+        };
+      },
+    }),
     UsersModule,
     AuthModule,
     RatingsModule,
