@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
@@ -28,10 +28,18 @@ export class AuthService {
 
   async register(createUserDto: any) {
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-    const newUser = await this.usersService.create({
-      ...createUserDto,
-      password: hashedPassword,
-    });
-    return this.login(newUser);
+
+    try {
+      const newUser = await this.usersService.create({
+        ...createUserDto,
+        password: hashedPassword,
+      });
+      return this.login(newUser);
+    } catch (error) {
+      if (error.code === 11000) { // MongoDB unique constraint violation
+        throw new BadRequestException('Email already in use');
+      }
+      throw new InternalServerErrorException('Something went wrong');
+    }
   }
 }
