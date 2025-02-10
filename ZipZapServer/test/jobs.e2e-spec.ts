@@ -90,6 +90,27 @@ describe('Jobs Module (e2e)', () => {
         expect(res.body.length).toBe(1);
     });
 
+    it('should retrieve a job posting by its valid ID', async () => {
+        const res = await request(testBase.getHttpServer())
+            .get(`/jobs/${jobId}`)
+            .expect(200);
+
+        // Validate that the response contains the expected job properties.
+        expect(res.body).toHaveProperty('_id', jobId);
+        expect(res.body).toHaveProperty('title', 'Software Engineer');
+        expect(res.body).toHaveProperty('description', 'Develop cool features');
+        expect(res.body).toHaveProperty('location', 'Remote');
+        expect(res.body).toHaveProperty('salary', 120000);
+    });
+
+    it('should return 404 when retrieving a job posting with a non-existent ID', async () => {
+        // Use a valid ObjectId format that is not present in the database.
+        const nonExistentId = '614c1b2f3f9a2e001a1a2b3c';
+        await request(testBase.getHttpServer())
+            .get(`/jobs/${nonExistentId}`)
+            .expect(404);
+    });
+
     it('should allow the job owner (user1) to update the job', async () => {
         const updateJobDto = {
             title: 'Senior Software Engineer',

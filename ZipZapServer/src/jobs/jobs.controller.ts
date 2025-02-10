@@ -14,6 +14,12 @@ export class JobsController {
         return this.jobsService.findAll();
     }
 
+    // Get job posting by id.
+    @Get(':jobId')
+    async getJobById(@Param('jobId') jobId: string) {
+        return this.jobsService.findById(jobId);
+    }
+
     // Create a new job posting. Requires authentication.
     @UseGuards(JwtAuthGuard)
     @Post()
