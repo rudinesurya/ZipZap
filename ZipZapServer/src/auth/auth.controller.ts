@@ -1,9 +1,9 @@
-import { Controller, Post, Body, UnauthorizedException, UseGuards, Request, Get, HttpCode } from '@nestjs/common';
+import { Controller, Post, Body, UnauthorizedException, UseGuards, Request, Get, HttpCode, Put } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
-
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -29,5 +29,12 @@ export class AuthController {
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;
+  }
+
+  // Change password for the authenticated user.
+  @UseGuards(JwtAuthGuard)
+  @Put('password')
+  async changePassword(@Request() req, @Body() changePasswordDto: ChangePasswordDto) {
+    return this.authService.changePassword(req.user.userId, changePasswordDto);
   }
 }

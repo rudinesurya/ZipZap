@@ -15,6 +15,9 @@ export class User {
     @Prop({ required: true })
     name: string;
 
+    @Prop({ unique: true, sparse: true })
+    handle?: string;
+
     // Add other settings properties as needed
     @Prop()
     theme: string;

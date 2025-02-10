@@ -7,7 +7,6 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from 'src/users/users.module';
 
-
 @Module({
   imports: [
     UsersModule,

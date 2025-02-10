@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from './user.schema';
@@ -20,11 +20,15 @@ export class UsersService {
     return this.userModel.findById(userId).exec();
   }
 
-  async updateSettings(userId: string, settings: any): Promise<UserDocument> {
-    return this.userModel.findByIdAndUpdate(userId, settings, { new: true }).exec();
+  async findByHandle(handle: string): Promise<User> {
+    const user = await this.userModel.findOne({ handle });
+    if (!user) {
+      throw new NotFoundException(`User with handle ${handle} not found`);
+    }
+    return user;
   }
 
-  async updateProfile(userId: string, profile: any): Promise<UserDocument> {
-    return this.userModel.findByIdAndUpdate(userId, profile, { new: true }).exec();
+  async updateUser(userId: string, userProperties: any): Promise<UserDocument> {
+    return this.userModel.findByIdAndUpdate(userId, userProperties, { new: true }).exec();
   }
 }

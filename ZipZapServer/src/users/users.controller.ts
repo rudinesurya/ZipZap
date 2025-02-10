@@ -15,6 +15,12 @@ export class UsersController {
     return this.usersService.findById(req.user.userId);
   }
 
+  // Retrieve a user profile by handle.
+  @Get('handle/:handle')
+  async getProfileByHandle(@Param('handle') handle: string) {
+    return this.usersService.findByHandle(handle);
+  }
+
   // Get authenticated user's settings
   @UseGuards(JwtAuthGuard)
   @Get('settings')
@@ -26,7 +32,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Put('profile')
   async updateProfile(@Request() req, @Body() updateUserProfileDto: UpdateUserProfileDto) {
-    return this.usersService.updateProfile(req.user.userId, updateUserProfileDto);
+    return this.usersService.updateUser(req.user.userId, updateUserProfileDto);
   }
 
   // Update user settings
@@ -36,6 +42,6 @@ export class UsersController {
     @Request() req,
     @Body() updateUserSettingsDto: UpdateUserSettingsDto,
   ) {
-    return this.usersService.updateSettings(req.user.userId, updateUserSettingsDto);
+    return this.usersService.updateUser(req.user.userId, updateUserSettingsDto);
   }
 }
