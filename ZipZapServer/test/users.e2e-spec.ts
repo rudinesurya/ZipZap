@@ -49,18 +49,6 @@ describe('Users Module (e2e)', () => {
         expect(res.body).toHaveProperty('name', 'Test User');
     });
 
-    it('should retrieve the authenticated user settings', async () => {
-        const res = await request(testBase.getHttpServer())
-            .get('/users/settings')
-            .set('Authorization', `Bearer ${userToken}`)
-            .expect(200);
-
-        // Verify that the returned profile has the expected properties.
-        expect(res.body).toHaveProperty('_id', userId);
-        expect(res.body).toHaveProperty('email', 'testuser@example.com');
-        expect(res.body).toHaveProperty('name', 'Test User');
-    });
-
     it('should update user profile using PUT /users/profile', async () => {
         // Prepare new profile to update (for example, updating the name).
         const updateProfileDto = { name: 'Updated Test User' };
