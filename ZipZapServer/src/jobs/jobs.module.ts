@@ -9,6 +9,7 @@ import { Job, JobSchema } from './job.schema';
         MongooseModule.forFeature([{ name: Job.name, schema: JobSchema }]),
     ],
     controllers: [JobsController],
+    exports: [JobsService],
     providers: [JobsService],
 })
 export class JobsModule { }
