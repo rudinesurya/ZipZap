@@ -11,10 +11,12 @@ export class User {
     @Prop({ required: true })
     password: string;
 
+    // Add other profile properties as needed
     @Prop({ required: true })
     name: string;
 
-    @Prop({})
+    // Add other settings properties as needed
+    @Prop()
     theme: string;
 }
 

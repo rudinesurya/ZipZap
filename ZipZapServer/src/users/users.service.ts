@@ -23,4 +23,8 @@ export class UsersService {
   async updateSettings(userId: string, settings: any): Promise<UserDocument> {
     return this.userModel.findByIdAndUpdate(userId, settings, { new: true }).exec();
   }
+
+  async updateProfile(userId: string, profile: any): Promise<UserDocument> {
+    return this.userModel.findByIdAndUpdate(userId, profile, { new: true }).exec();
+  }
 }
