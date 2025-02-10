@@ -15,10 +15,10 @@ export class JobsService {
     }
 
     // Return a single job by its ID
-    async findById(id: string): Promise<Job> {
-        const job = await this.jobModel.findById(id).exec();
+    async findById(jobId: string): Promise<Job> {
+        const job = await this.jobModel.findById(jobId).exec();
         if (!job) {
-            throw new NotFoundException(`Job with id ${id} not found`);
+            throw new NotFoundException(`Job with id ${jobId} not found`);
         }
         return job;
     }
@@ -33,10 +33,10 @@ export class JobsService {
     }
 
     // Update an existing job (only if the current user is the one who posted it)
-    async updateJob(id: string, updateJobDto: UpdateJobDto, userId: string): Promise<Job> {
-        const job = await this.jobModel.findById(id).exec();
+    async updateJob(jobId: string, updateJobDto: UpdateJobDto, userId: string): Promise<Job> {
+        const job = await this.jobModel.findById(jobId).exec();
         if (!job) {
-            throw new NotFoundException(`Job with id ${id} not found`);
+            throw new NotFoundException(`Job with id ${jobId} not found`);
         }
         if (job.postedBy.toString() !== userId) {
             throw new ForbiddenException(`You are not allowed to update this job`);
@@ -46,15 +46,15 @@ export class JobsService {
     }
 
     // Remove a job posting (only if the current user is the one who posted it)
-    async removeJob(id: string, userId: string): Promise<{ message: string }> {
-        const job = await this.jobModel.findById(id).exec();
+    async removeJob(jobId: string, userId: string): Promise<{ message: string }> {
+        const job = await this.jobModel.findById(jobId).exec();
         if (!job) {
-            throw new NotFoundException(`Job with id ${id} not found`);
+            throw new NotFoundException(`Job with id ${jobId} not found`);
         }
         if (job.postedBy.toString() !== userId) {
             throw new ForbiddenException(`You are not allowed to delete this job`);
         }
-        await this.jobModel.deleteOne({ _id: id });
+        await this.jobModel.deleteOne({ _id: jobId });
         return { message: 'Job removed successfully' };
     }
 }

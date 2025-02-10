@@ -24,21 +24,21 @@ export class JobsController {
 
     // Update a job posting. Requires authentication.
     @UseGuards(JwtAuthGuard)
-    @Put(':id')
+    @Put(':jobId')
     async updateJob(
-        @Param('id') id: string,
+        @Param('jobId') jobId: string,
         @Request() req,
         @Body() updateJobDto: UpdateJobDto,
     ) {
         const userId = req.user.userId;
-        return this.jobsService.updateJob(id, updateJobDto, userId);
+        return this.jobsService.updateJob(jobId, updateJobDto, userId);
     }
 
     // Delete a job posting. Requires authentication.
     @UseGuards(JwtAuthGuard)
-    @Delete(':id')
-    async removeJob(@Param('id') id: string, @Request() req) {
+    @Delete(':jobId')
+    async removeJob(@Param('jobId') jobId: string, @Request() req) {
         const userId = req.user.userId;
-        return this.jobsService.removeJob(id, userId);
+        return this.jobsService.removeJob(jobId, userId);
     }
 }
