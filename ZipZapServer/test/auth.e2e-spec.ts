@@ -1,44 +1,17 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common';
-import { Test } from '@nestjs/testing';
-import { AppModule } from '../src/app.module';
 import * as request from 'supertest';
-import { MongoMemoryServer } from 'mongodb-memory-server';
-import * as mongoose from 'mongoose';
+import { E2ETestBase } from './base.e2e';
 
 describe('Auth Module (e2e)', () => {
-    let app: INestApplication;
-    let mongod: MongoMemoryServer;
+    let testBase: E2ETestBase;
     let userToken: string;
 
     beforeAll(async () => {
-        // Start an in-memory MongoDB instance
-        mongod = await MongoMemoryServer.create();
-        const uri = mongod.getUri();
-
-        // Override the connection string for testing
-        process.env.MONGO_URI = uri;
-
-        // Explicitly connect before initializing the NestJS app
-        await mongoose.connect(process.env.MONGO_URI, {});
-
-        // Create testing module using the real AppModule
-        const moduleFixture = await Test.createTestingModule({
-            imports: [AppModule],
-        }).compile();
-
-        app = moduleFixture.createNestApplication();
-        app.useGlobalPipes(new ValidationPipe()); // Enable validation globally
-        await app.init();
-
-        // Drop the in-memory database before starting
-        const connection = mongoose.connection;
-        await connection.dropDatabase();
+        testBase = new E2ETestBase();
+        await testBase.setup();
     });
 
     afterAll(async () => {
-        await mongoose.connection.close();
-        await app.close();
-        await mongod.stop();
+        await testBase.teardown();
     });
 
     it('should register a new user', async () => {
@@ -48,7 +21,7 @@ describe('Auth Module (e2e)', () => {
             password: 'password123',
         };
 
-        const res = await request(app.getHttpServer())
+        const res = await request(testBase.getHttpServer())
             .post('/auth/register')
             .send(registerDto)
             .expect(201);
@@ -64,7 +37,7 @@ describe('Auth Module (e2e)', () => {
             password: 'password123',
         };
 
-        const res = await request(app.getHttpServer())
+        const res = await request(testBase.getHttpServer())
             .post('/auth/register')
             .send(duplicateUserDto)
             .expect(400);
@@ -78,7 +51,7 @@ describe('Auth Module (e2e)', () => {
             password: 'password123',
         };
 
-        const res = await request(app.getHttpServer())
+        const res = await request(testBase.getHttpServer())
             .post('/auth/login')
             .send(loginDto)
             .expect(200);
@@ -93,7 +66,7 @@ describe('Auth Module (e2e)', () => {
             password: 'wrongpassword',
         };
 
-        const res = await request(app.getHttpServer())
+        const res = await request(testBase.getHttpServer())
             .post('/auth/login')
             .send(invalidLoginDto)
             .expect(401);
@@ -102,7 +75,7 @@ describe('Auth Module (e2e)', () => {
     });
 
     it('should retrieve user profile with valid JWT', async () => {
-        const res = await request(app.getHttpServer())
+        const res = await request(testBase.getHttpServer())
             .get('/users/profile')
             .set('Authorization', `Bearer ${userToken}`)
             .expect(200);
@@ -112,13 +85,13 @@ describe('Auth Module (e2e)', () => {
     });
 
     it('should deny access to profile without token', async () => {
-        await request(app.getHttpServer())
+        await request(testBase.getHttpServer())
             .get('/users/profile')
             .expect(401);
     });
 
     it('should deny access to profile with an invalid token', async () => {
-        await request(app.getHttpServer())
+        await request(testBase.getHttpServer())
             .get('/users/profile')
             .set('Authorization', 'Bearer invalid_token')
             .expect(401);

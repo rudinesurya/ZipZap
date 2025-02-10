@@ -1,41 +1,17 @@
-// test/users.e2e-spec.ts
-import { INestApplication, ValidationPipe } from '@nestjs/common';
-import { Test } from '@nestjs/testing';
-import { AppModule } from '../src/app.module';
 import * as request from 'supertest';
-import { MongoMemoryServer } from 'mongodb-memory-server';
-import * as mongoose from 'mongoose';
+import { E2ETestBase } from './base.e2e';
 
 describe('Users Module (e2e)', () => {
-    let app: INestApplication;
-    let mongod: MongoMemoryServer;
+    let testBase: E2ETestBase;
     let userToken: string;
     let userId: string; // We'll extract this from the profile response
 
     beforeAll(async () => {
-        // Start an in-memory MongoDB instance.
-        mongod = await MongoMemoryServer.create();
-        process.env.MONGO_URI = mongod.getUri();
-
-        // Explicitly connect before initializing the NestJS app
-        await mongoose.connect(process.env.MONGO_URI, {});
-
-        // Create testing module using the AppModule.
-        const moduleFixture = await Test.createTestingModule({
-            imports: [AppModule],
-        }).compile();
-
-        app = moduleFixture.createNestApplication();
-        // Enable global validation for DTOs.
-        app.useGlobalPipes(new ValidationPipe());
-        await app.init();
-
-        // Ensure the in-memory database is clean.
-        const connection = mongoose.connection;
-        await connection.dropDatabase();
+        testBase = new E2ETestBase();
+        await testBase.setup();
 
         // Register a user for testing.
-        const registerResponse = await request(app.getHttpServer())
+        const registerResponse = await request(testBase.getHttpServer())
             .post('/auth/register')
             .send({
                 name: 'Test User',
@@ -48,7 +24,7 @@ describe('Users Module (e2e)', () => {
         userToken = registerResponse.body.access_token;
 
         // Retrieve the user's profile to obtain the user ID.
-        const profileResponse = await request(app.getHttpServer())
+        const profileResponse = await request(testBase.getHttpServer())
             .get('/users/profile')
             .set('Authorization', `Bearer ${userToken}`)
             .expect(200);
@@ -58,13 +34,11 @@ describe('Users Module (e2e)', () => {
     });
 
     afterAll(async () => {
-        await mongoose.connection.close();
-        await app.close();
-        await mongod.stop();
+        await testBase.teardown();
     });
 
     it('should retrieve the authenticated user profile', async () => {
-        const res = await request(app.getHttpServer())
+        const res = await request(testBase.getHttpServer())
             .get('/users/profile')
             .set('Authorization', `Bearer ${userToken}`)
             .expect(200);
@@ -79,7 +53,7 @@ describe('Users Module (e2e)', () => {
         // Prepare new settings to update (for example, updating the name).
         const updateSettingsDto = { name: 'Updated Test User' };
 
-        const res = await request(app.getHttpServer())
+        const res = await request(testBase.getHttpServer())
             .put('/users/settings')
             .set('Authorization', `Bearer ${userToken}`)
             .send(updateSettingsDto)
@@ -93,13 +67,13 @@ describe('Users Module (e2e)', () => {
     });
 
     it('should deny access to profile without token', async () => {
-        await request(app.getHttpServer())
+        await request(testBase.getHttpServer())
             .get('/users/profile')
             .expect(401);
     });
 
     it('should deny updating settings without token', async () => {
-        await request(app.getHttpServer())
+        await request(testBase.getHttpServer())
             .put('/users/settings')
             .send({ name: 'Hacker' })
             .expect(401);

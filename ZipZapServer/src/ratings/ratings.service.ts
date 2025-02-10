@@ -18,7 +18,7 @@ export class RatingsService {
         createRatingDto: CreateRatingDto,
     ): Promise<Rating> {
         // Check if a rating already exists from this rater for the rated user.
-        const existing = await this.ratingModel.findOne({ ratedUser: new Types.ObjectId(ratedUserId), rater: new Types.ObjectId(raterId) });
+        const existing = await this.ratingModel.findOne({ ratedUser: new Types.ObjectId(ratedUserId), rater: new Types.ObjectId(raterId) }).exec();
         if (existing) {
             throw new ForbiddenException('You have already rated this user. Use the update endpoint to modify your rating.');
         }
@@ -36,7 +36,7 @@ export class RatingsService {
         raterId: string,
         updateRatingDto: UpdateRatingDto,
     ): Promise<Rating> {
-        const rating = await this.ratingModel.findById(ratingId);
+        const rating = await this.ratingModel.findById(ratingId).exec();
         if (!rating) {
             throw new NotFoundException('Rating not found');
         }
@@ -52,7 +52,7 @@ export class RatingsService {
         ratingId: string,
         raterId: string,
     ): Promise<{ message: string }> {
-        const rating = await this.ratingModel.findById(ratingId);
+        const rating = await this.ratingModel.findById(ratingId).exec();
         if (!rating) {
             throw new NotFoundException('Rating not found');
         }

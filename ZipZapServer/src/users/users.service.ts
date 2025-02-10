@@ -13,14 +13,14 @@ export class UsersService {
   }
 
   async findByEmail(email: string): Promise<UserDocument | undefined> {
-    return this.userModel.findOne({ email });
+    return this.userModel.findOne({ email }).exec();
   }
 
   async findById(id: string): Promise<UserDocument | undefined> {
-    return this.userModel.findById(id);
+    return this.userModel.findById(id).exec();
   }
 
   async updateSettings(userId: string, settings: any): Promise<UserDocument> {
-    return this.userModel.findByIdAndUpdate(userId, settings, { new: true });
+    return this.userModel.findByIdAndUpdate(userId, settings, { new: true }).exec();
   }
 }
