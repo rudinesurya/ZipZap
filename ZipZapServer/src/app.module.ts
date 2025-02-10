@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { RatingsModule } from './ratings/ratings.module';
 import { JobsModule } from './jobs/jobs.module';
+import { MessagesModule } from './messages/messages.module';
 
 
 @Module({
@@ -22,6 +23,7 @@ import { JobsModule } from './jobs/jobs.module';
     AuthModule,
     RatingsModule,
     JobsModule,
+    MessagesModule,
   ],
   controllers: [],
   providers: [],
