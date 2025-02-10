@@ -4,6 +4,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { RatingsModule } from './ratings/ratings.module';
+import { JobsModule } from './jobs/jobs.module';
 
 
 @Module({
@@ -20,6 +21,7 @@ import { RatingsModule } from './ratings/ratings.module';
     UsersModule,
     AuthModule,
     RatingsModule,
+    JobsModule,
   ],
   controllers: [],
   providers: [],
