@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { Location, LocationSchema } from './location.schema';
 
 export type JobDocument = Job & Document;
 
@@ -11,8 +12,8 @@ export class Job {
     @Prop({ required: true })
     description: string;
 
-    @Prop()
-    location?: string;
+    @Prop({ type: LocationSchema, required: false })
+    location?: Location;
 
     @Prop()
     salary?: number;

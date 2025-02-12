@@ -1,4 +1,6 @@
-import { IsString, IsNotEmpty, IsOptional, IsNumber } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsString, IsNotEmpty, IsOptional, IsNumber, ValidateNested } from 'class-validator';
+import { CreateJobLocationDto } from './create-job-location.dto';
 
 export class CreateJobDto {
     @IsString()
@@ -9,9 +11,10 @@ export class CreateJobDto {
     @IsNotEmpty()
     description: string;
 
-    @IsString()
     @IsOptional()
-    location?: string;
+    @ValidateNested()
+    @Type(() => CreateJobLocationDto)
+    location?: CreateJobLocationDto;
 
     @IsNumber()
     @IsOptional()

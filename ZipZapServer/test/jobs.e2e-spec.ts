@@ -62,7 +62,12 @@ describe('Jobs Module (e2e)', () => {
         const createJobDto = {
             title: 'Software Engineer',
             description: 'Develop cool features',
-            location: 'Remote',
+            location: {
+                formattedAddress: '1600 Amphitheatre Parkway, Mountain View, CA 94043, USA',
+                placeId: 'ChIJ2eUgeAK6j4ARbn5u_wAGqWA',
+                lat: 37.4221,
+                lng: -122.0841,
+            },
             salary: 120000,
         };
 
@@ -75,8 +80,15 @@ describe('Jobs Module (e2e)', () => {
         expect(res.body).toHaveProperty('_id');
         expect(res.body).toHaveProperty('title', 'Software Engineer');
         expect(res.body).toHaveProperty('description', 'Develop cool features');
-        expect(res.body).toHaveProperty('location', 'Remote');
         expect(res.body).toHaveProperty('salary', 120000);
+
+        expect(res.body).toHaveProperty('location');
+        const location = res.body.location;
+        expect(location).toHaveProperty('formattedAddress', '1600 Amphitheatre Parkway, Mountain View, CA 94043, USA');
+        expect(location).toHaveProperty('placeId', 'ChIJ2eUgeAK6j4ARbn5u_wAGqWA');
+        expect(location).toHaveProperty('lat', 37.4221);
+        expect(location).toHaveProperty('lng', -122.0841);
+        
         // Save the created job's ID for subsequent tests.
         jobId = res.body._id;
     });
@@ -99,8 +111,14 @@ describe('Jobs Module (e2e)', () => {
         expect(res.body).toHaveProperty('_id', jobId);
         expect(res.body).toHaveProperty('title', 'Software Engineer');
         expect(res.body).toHaveProperty('description', 'Develop cool features');
-        expect(res.body).toHaveProperty('location', 'Remote');
         expect(res.body).toHaveProperty('salary', 120000);
+
+        expect(res.body).toHaveProperty('location');
+        const location = res.body.location;
+        expect(location).toHaveProperty('formattedAddress', '1600 Amphitheatre Parkway, Mountain View, CA 94043, USA');
+        expect(location).toHaveProperty('placeId', 'ChIJ2eUgeAK6j4ARbn5u_wAGqWA');
+        expect(location).toHaveProperty('lat', 37.4221);
+        expect(location).toHaveProperty('lng', -122.0841);
     });
 
     it('should return 404 when retrieving a job posting with a non-existent ID', async () => {
@@ -115,7 +133,12 @@ describe('Jobs Module (e2e)', () => {
         const updateJobDto = {
             title: 'Senior Software Engineer',
             description: 'Develop awesome features',
-            location: 'Onsite',
+            location: {
+                formattedAddress: '1 Infinite Loop, Cupertino, CA 95014, USA',
+                placeId: 'ChIJ-3aBaiV2j4ARxBYw-DyWc1I',
+                lat: 37.33182,
+                lng: -122.03118,
+            },
             salary: 150000,
         };
 
@@ -128,8 +151,14 @@ describe('Jobs Module (e2e)', () => {
         expect(res.body).toHaveProperty('_id', jobId);
         expect(res.body).toHaveProperty('title', 'Senior Software Engineer');
         expect(res.body).toHaveProperty('description', 'Develop awesome features');
-        expect(res.body).toHaveProperty('location', 'Onsite');
         expect(res.body).toHaveProperty('salary', 150000);
+
+        expect(res.body).toHaveProperty('location');
+        const location = res.body.location;
+        expect(location).toHaveProperty('formattedAddress', '1 Infinite Loop, Cupertino, CA 95014, USA');
+        expect(location).toHaveProperty('placeId', 'ChIJ-3aBaiV2j4ARxBYw-DyWc1I');
+        expect(location).toHaveProperty('lat', 37.33182);
+        expect(location).toHaveProperty('lng', -122.03118);
     });
 
     it('should not allow a non-owner (user2) to update the job', async () => {

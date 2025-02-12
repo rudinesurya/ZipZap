@@ -56,7 +56,12 @@ describe('Applications Module (e2e)', () => {
             .send({
                 title: 'Test Job',
                 description: 'Job Description',
-                location: 'Remote',
+                location: {
+                    formattedAddress: '1600 Amphitheatre Parkway, Mountain View, CA 94043, USA',
+                    placeId: 'ChIJ2eUgeAK6j4ARbn5u_wAGqWA',
+                    lat: 37.4221,
+                    lng: -122.0841,
+                },
                 salary: 100000,
             })
             .expect(201);
