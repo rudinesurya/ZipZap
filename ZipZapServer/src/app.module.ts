@@ -8,7 +8,6 @@ import { JobsModule } from './jobs/jobs.module';
 import { MessagesModule } from './messages/messages.module';
 import { ApplicationsModule } from './applications/applications.module';
 
-
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
