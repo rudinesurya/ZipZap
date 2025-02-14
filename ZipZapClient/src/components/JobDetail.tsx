@@ -1,23 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { Segment, Header, Divider } from 'semantic-ui-react';
+import { Segment, Header, Divider, Loader, Message } from 'semantic-ui-react';
 import { RootState } from '../redux/store';
-
-interface LocationData {
-    formattedAddress: string;
-    placeId: string;
-    lat: number;
-    lng: number;
-}
-
-interface Job {
-    _id: string;
-    title: string;
-    description: string;
-    salary?: number;
-    location?: LocationData;
-}
+import { fetchJobRequest } from '../redux/slices/jobsSlice';
 
 interface RouteParams extends Record<string, string> {
     jobId: string;
@@ -25,18 +11,21 @@ interface RouteParams extends Record<string, string> {
 
 const JobDetail: React.FC = () => {
     const { jobId } = useParams<RouteParams>();
-    const [job, setJob] = useState<Job | null>(null);
-    const { apiBaseUrl } = useSelector((state: RootState) => state.config);
+    const dispatch = useDispatch();
+    const { selectedJob: job, loading, error } = useSelector((state: RootState) => state.jobs);
 
     useEffect(() => {
-        fetch(`${apiBaseUrl}/api/jobs/${jobId}`)
-            .then((res) => res.json())
-            .then((data) => setJob(data))
-            .catch((err) => console.error(err));
-    }, [jobId]);
+        if (jobId) {
+            dispatch(fetchJobRequest(jobId));
+        }
+    }, [dispatch, jobId]);
 
-    if (!job) {
-        return <div>Loading...</div>;
+    if (loading || !job) {
+        return <Loader active inline="centered" />;
+    }
+
+    if (error) {
+        return <Message error header="Error" content={error} />;
     }
 
     return (

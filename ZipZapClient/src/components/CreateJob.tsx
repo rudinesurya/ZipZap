@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Button, Message } from 'semantic-ui-react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
+import { createJobRequest } from '../redux/slices/jobsSlice';
 
 interface JobFormData {
     title: string;
@@ -18,6 +19,7 @@ const CreateJob: React.FC = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const auth = useSelector((state: RootState) => state.auth);
+    const { loading, error } = useSelector((state: RootState) => state.jobs);
     const [job, setJob] = useState<JobFormData>({
         title: '',
         description: '',
@@ -27,9 +29,7 @@ const CreateJob: React.FC = () => {
         lat: '',
         lng: '',
     });
-    const [error, setError] = useState<string>('');
-    const { apiBaseUrl } = useSelector((state: RootState) => state.config);
-
+    
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
         { name, value }: { name: string; value: string; }
@@ -37,7 +37,8 @@ const CreateJob: React.FC = () => {
         setJob({ ...job, [name]: value });
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
         const payload = {
             title: job.title,
             description: job.description,
@@ -52,25 +53,25 @@ const CreateJob: React.FC = () => {
                 : undefined,
         };
 
-        try {
-            const res = await fetch(`${apiBaseUrl}/api/jobs`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${auth.token}`,
-                },
-                body: JSON.stringify(payload),
-            });
-            if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.message || 'Failed to create job');
-            }
-            const createdJob = await res.json();
-            navigate(`/jobs/${createdJob._id}`);
-        } catch (err) {
-            setError((err as Error).message);
+        if (!auth.token) {
+            // Ideally, you would redirect to login if the user is not authenticated.
+            alert('You must be logged in to create a job');
+            return;
         }
+
+        // Dispatch the createJobRequest with the payload and token.
+        dispatch(createJobRequest({ data: payload, token: auth.token }));
     };
+
+    // Redirect to job detail page when a job is successfully created.
+    // const { jobs } = useSelector((state: RootState) => state.jobs);
+    // useEffect(() => {
+    //     // Assuming the newly created job is appended at the end of the jobs array.
+    //     if (jobs.length > 0 && !loading && !error) {
+    //         const latestJob = jobs[jobs.length - 1];
+    //         navigate(`/jobs/${latestJob._id}`);
+    //     }
+    // }, [jobs]);
 
     return (
         <Form onSubmit={handleSubmit} error={!!error}>
