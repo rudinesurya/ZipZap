@@ -35,12 +35,8 @@ function* loginSaga(action: { payload: LoginPayload; type: string }) {
     try {
         const apiBaseUrl: string = yield select(selectApiBaseUrl);
         const data: { access_token: string } = yield call(loginApi, apiBaseUrl, action.payload);
-        // Save token and user in cookies (expires in 7 days)
         Cookies.set('token', data.access_token, { expires: 7 });
-        const user = { name: action.payload.email };
-        Cookies.set('user', JSON.stringify(user), { expires: 7 });
-        // For simplicity, we use the email as the user's name.
-        yield put(loginSuccess({ user: { name: action.payload.email }, token: data.access_token }));
+        yield put(loginSuccess({ token: data.access_token }));
     } catch (error: any) {
         yield put(loginFailure(error.message));
     }
@@ -65,12 +61,8 @@ function* registerSaga(action: { payload: RegisterPayload; type: string }) {
     try {
         const apiBaseUrl: string = yield select(selectApiBaseUrl);
         const data: { access_token: string } = yield call(registerApi, apiBaseUrl, action.payload);
-        // Save token and user in cookies
         Cookies.set('token', data.access_token, { expires: 7 });
-        const user = { name: action.payload.email };
-        Cookies.set('user', JSON.stringify(user), { expires: 7 });
-        // For simplicity, we use the email as the user's name.
-        yield put(registerSuccess({ user: { name: action.payload.email }, token: data.access_token }));
+        yield put(registerSuccess({ token: data.access_token }));
     } catch (error: any) {
         yield put(registerFailure(error.message));
     }
@@ -79,7 +71,6 @@ function* registerSaga(action: { payload: RegisterPayload; type: string }) {
 function* logoutSaga() {
     // Remove cookies on logout
     Cookies.remove('token');
-    Cookies.remove('user');
     yield put(logout());
 }
 

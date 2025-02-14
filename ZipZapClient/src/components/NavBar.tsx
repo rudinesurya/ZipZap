@@ -6,7 +6,7 @@ import { RootState } from '../redux/store';
 import { logoutRequest } from '../redux/slices/authSlice';
 
 const NavBar: React.FC = () => {
-    const { user } = useSelector((state: RootState) => state.auth);
+    const { profile } = useSelector((state: RootState) => state.users);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     
@@ -16,9 +16,9 @@ const NavBar: React.FC = () => {
                 Job Portal
             </Menu.Item>
             <Menu.Menu position="right">
-                {user ? (
+                {profile ? (
                     <>
-                        <Menu.Item>Welcome, {user.name}</Menu.Item>
+                        <Menu.Item>Welcome, {profile.name}</Menu.Item>
                         <Menu.Item as={Link} to="/create-job">Create Job</Menu.Item>
                         <Menu.Item>
                             <Button color="red" onClick={() => { dispatch(logoutRequest()); navigate('/'); }}>

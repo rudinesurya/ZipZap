@@ -6,16 +6,26 @@ import JobDetail from './components/JobDetail';
 import CreateJob from './components/CreateJob';
 import Login from './components/Login';
 import Register from './components/Register';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchConfigRequest } from "./redux/slices/configSlice";
+import { fetchUserProfileRequest } from "./redux/slices/usersSlice";
+import { RootState } from "./redux/store";
 
 const App: React.FC = () => {
     const dispatch = useDispatch();
+    const apiBaseUrl = useSelector((state: RootState) => state.config.apiBaseUrl);
+    const token = useSelector((state: RootState) => state.auth.token);
 
     useEffect(() => {
         // Dispatch an action to load the configuration.
         dispatch(fetchConfigRequest());
     }, [dispatch]);
+
+    useEffect(() => {
+        if (apiBaseUrl && token) {
+            dispatch(fetchUserProfileRequest());
+        }
+    }, [apiBaseUrl, token, dispatch]);
 
     return (
         <Router>
