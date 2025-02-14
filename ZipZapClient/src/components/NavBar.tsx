@@ -3,7 +3,7 @@ import { Menu, Button } from 'semantic-ui-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
-import { logoutRequest } from '../redux/actions/authActions';
+import { logoutRequest } from '../redux/slices/authSlice';
 
 const NavBar: React.FC = () => {
     const { user } = useSelector((state: RootState) => state.auth);

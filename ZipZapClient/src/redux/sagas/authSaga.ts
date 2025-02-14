@@ -1,6 +1,5 @@
 import { call, put, select, takeLatest } from 'redux-saga/effects';
-import { loginRequest, logoutRequest, registerRequest } from '../actions/authActions';
-import { loginSuccess, loginFailure, logout, registerFailure, registerSuccess } from '../slices/authSlice';
+import { loginSuccess, loginFailure, logoutRequest, registerFailure, registerSuccess, loginRequest, registerRequest, logout } from '../slices/authSlice';
 import { RootState } from '../store';
 
 interface LoginPayload {

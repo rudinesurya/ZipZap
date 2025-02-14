@@ -7,7 +7,7 @@ import CreateJob from './components/CreateJob';
 import Login from './components/Login';
 import Register from './components/Register';
 import { useDispatch } from 'react-redux';
-import { fetchConfigRequest } from "./redux/actions/configAction";
+import { fetchConfigRequest } from "./redux/slices/configSlice";
 
 const App: React.FC = () => {
     const dispatch = useDispatch();

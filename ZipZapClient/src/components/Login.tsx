@@ -3,7 +3,7 @@ import { Form, Button, Message, Container } from 'semantic-ui-react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
-import { loginRequest } from '../redux/actions/authActions';
+import { loginRequest } from '../redux/slices/authSlice';
 
 const Login: React.FC = () => {
     const navigate = useNavigate();

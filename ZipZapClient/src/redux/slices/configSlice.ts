@@ -13,6 +13,9 @@ const configSlice = createSlice({
     name: 'config',
     initialState,
     reducers: {
+        fetchConfigRequest(state) {
+            state.error = undefined;
+        },
         fetchConfigSuccess(state, action: PayloadAction<{ apiBaseUrl: string }>) {
             state.apiBaseUrl = action.payload.apiBaseUrl;
             state.error = undefined;
@@ -24,6 +27,7 @@ const configSlice = createSlice({
 });
 
 export const {
+    fetchConfigRequest,
     fetchConfigSuccess,
     fetchConfigFailure,
 } = configSlice.actions;

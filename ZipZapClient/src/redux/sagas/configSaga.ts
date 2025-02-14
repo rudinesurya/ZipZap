@@ -1,9 +1,9 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import {
+    fetchConfigRequest,
     fetchConfigSuccess,
     fetchConfigFailure,
 } from '../slices/configSlice';
-import { fetchConfigRequest } from '../actions/configAction';
 
 function* fetchConfigSaga() {
     try {
