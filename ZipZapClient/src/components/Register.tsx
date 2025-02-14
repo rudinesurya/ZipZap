@@ -1,47 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Button, Message, Container } from 'semantic-ui-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
+import { registerRequest } from '../redux/actions/authActions';
 
 const Register: React.FC = () => {
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const dispatch = useDispatch();
+    const auth = useSelector((state: RootState) => state.auth);
     const [userData, setUserData] = useState({ name: '', email: '', password: '' });
-    const [error, setError] = useState<string>('');
 
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement>,
-        { name, value }: { name: string; value: string }
-    ) => {
-        setUserData({ ...userData, [name]: value });
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUserData({ ...userData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async () => {
-        console.log(JSON.stringify(userData));
-        try {
-            const res = await fetch(`${apiBaseUrl}/api/auth/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(userData),
-            });
-            if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.message || 'Registration failed');
-            }
-            const data = await res.json();
-            const user = { name: userData.name };
-            login(user, data.access_token);
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        dispatch(registerRequest(userData));
+    };
+
+    useEffect(() => {
+        if (auth.token) {
             navigate('/');
-        } catch (err) {
-            setError((err as Error).message);
         }
-    };
+    }, [auth.token, navigate]);
 
     return (
         <Container style={{ marginTop: '2em' }}>
-            <Form onSubmit={handleSubmit} error={!!error}>
+            <Form onSubmit={handleSubmit} error={!!auth.error}>
                 <Form.Input
                     label="Name"
                     name="name"
@@ -64,7 +51,7 @@ const Register: React.FC = () => {
                     onChange={handleChange}
                     required
                 />
-                {error && <Message error header="Registration Error" content={error} />}
+                {auth.error && <Message error header="Registration Error" content={auth.error} />}
                 <Button primary type="submit">Register</Button>
             </Form>
         </Container>

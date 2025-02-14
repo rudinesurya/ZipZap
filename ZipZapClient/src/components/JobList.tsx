@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Loader } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
 interface Job {
     _id: string;
@@ -14,6 +14,7 @@ interface Job {
 const JobList: React.FC = () => {
     const [jobs, setJobs] = useState<Job[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const { apiBaseUrl } = useSelector((state: RootState) => state.config);
 
     useEffect(() => {
         fetch(`${apiBaseUrl}/api/jobs`)

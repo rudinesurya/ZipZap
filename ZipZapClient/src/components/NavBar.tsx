@@ -1,10 +1,13 @@
 import React from 'react';
 import { Menu, Button } from 'semantic-ui-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
+import { logoutRequest } from '../redux/actions/authActions';
 
 const NavBar: React.FC = () => {
-    const { user, logout } = useAuth();
+    const { user } = useSelector((state: RootState) => state.auth);
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     
     return (
@@ -18,7 +21,7 @@ const NavBar: React.FC = () => {
                         <Menu.Item>Welcome, {user.name}</Menu.Item>
                         <Menu.Item as={Link} to="/create-job">Create Job</Menu.Item>
                         <Menu.Item>
-                            <Button color="red" onClick={() => { logout(); navigate('/'); }}>
+                            <Button color="red" onClick={() => { dispatch(logoutRequest()); navigate('/'); }}>
                                 Logout
                             </Button>
                         </Menu.Item>

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { Segment, Header, Divider } from 'semantic-ui-react';
-
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+import { RootState } from '../redux/store';
 
 interface LocationData {
     formattedAddress: string;
@@ -26,6 +26,7 @@ interface RouteParams extends Record<string, string> {
 const JobDetail: React.FC = () => {
     const { jobId } = useParams<RouteParams>();
     const [job, setJob] = useState<Job | null>(null);
+    const { apiBaseUrl } = useSelector((state: RootState) => state.config);
 
     useEffect(() => {
         fetch(`${apiBaseUrl}/api/jobs/${jobId}`)

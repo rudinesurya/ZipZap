@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Button, Message, Container } from 'semantic-ui-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
+import { loginRequest } from '../redux/actions/authActions';
 
 const Login: React.FC = () => {
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const dispatch = useDispatch();
+    const auth = useSelector((state: RootState) => state.auth);
     const [credentials, setCredentials] = useState({ email: '', password: '' });
-    const [error, setError] = useState<string>('');
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement>,
@@ -18,30 +18,21 @@ const Login: React.FC = () => {
         setCredentials({ ...credentials, [name]: value });
     };
 
-    const handleSubmit = async () => {
-        try {
-            const res = await fetch(`${apiBaseUrl}/api/auth/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(credentials),
-            });
-            if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.message || 'Login failed');
-            }
-            const data = await res.json();
-            // For simplicity, we use the email as the user's name.
-            const user = { name: credentials.email };
-            login(user, data.access_token);
-            navigate('/');
-        } catch (err) {
-            setError((err as Error).message);
-        }
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        dispatch(loginRequest({ email: credentials.email, password: credentials.password }));
     };
+
+    // Redirect if logged in
+    useEffect(() => {
+        if (auth.token) {
+            navigate('/');
+        }
+    }, [auth.token, navigate]);
 
     return (
         <Container style={{ marginTop: '2em' }}>
-            <Form onSubmit={handleSubmit} error={!!error}>
+            <Form onSubmit={handleSubmit} error={!!auth.error}>
                 <Form.Input
                     label="Email"
                     name="email"
@@ -57,7 +48,7 @@ const Login: React.FC = () => {
                     onChange={handleChange}
                     required
                 />
-                {error && <Message error header="Login Error" content={error} />}
+                {auth.error && <Message error header="Login Error" content={auth.error} />}
                 <Button primary type="submit">Login</Button>
             </Form>
         </Container>

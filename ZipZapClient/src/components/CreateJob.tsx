@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { Form, Button, Message } from 'semantic-ui-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
 interface JobFormData {
     title: string;
@@ -17,7 +16,8 @@ interface JobFormData {
 
 const CreateJob: React.FC = () => {
     const navigate = useNavigate();
-    const { token } = useAuth();
+    const dispatch = useDispatch();
+    const auth = useSelector((state: RootState) => state.auth);
     const [job, setJob] = useState<JobFormData>({
         title: '',
         description: '',
@@ -28,6 +28,7 @@ const CreateJob: React.FC = () => {
         lng: '',
     });
     const [error, setError] = useState<string>('');
+    const { apiBaseUrl } = useSelector((state: RootState) => state.config);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -56,7 +57,7 @@ const CreateJob: React.FC = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${auth.token}`,
                 },
                 body: JSON.stringify(payload),
             });

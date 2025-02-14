@@ -1,15 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { AuthProvider } from './context/AuthContext';
 import NavBar from './components/NavBar';
 import JobList from './components/JobList';
 import JobDetail from './components/JobDetail';
 import CreateJob from './components/CreateJob';
 import Login from './components/Login';
 import Register from './components/Register';
+import { useDispatch } from 'react-redux';
+import { fetchConfigRequest } from "./redux/actions/configAction";
 
-const App: React.FC = () => (
-    <AuthProvider>
+const App: React.FC = () => {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        // Dispatch an action to load the configuration.
+        dispatch(fetchConfigRequest());
+    }, [dispatch]);
+
+    return (
         <Router>
             <NavBar />
             <div className="ui container" style={{ marginTop: '7em' }}>
@@ -22,7 +30,7 @@ const App: React.FC = () => (
                 </Routes>
             </div>
         </Router>
-    </AuthProvider>
-);
+    );
+};
 
-export default App
+export default App;
