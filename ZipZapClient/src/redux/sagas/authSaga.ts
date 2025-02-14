@@ -67,9 +67,10 @@ function* registerSaga(action: { payload: RegisterPayload; type: string }) {
         const data: { access_token: string } = yield call(registerApi, apiBaseUrl, action.payload);
         // Save token and user in cookies
         Cookies.set('token', data.access_token, { expires: 7 });
-        const user = { name: action.payload.name };
+        const user = { name: action.payload.email };
         Cookies.set('user', JSON.stringify(user), { expires: 7 });
-        yield put(registerSuccess({ user: { name: action.payload.name }, token: data.access_token }));
+        // For simplicity, we use the email as the user's name.
+        yield put(registerSuccess({ user: { name: action.payload.email }, token: data.access_token }));
     } catch (error: any) {
         yield put(registerFailure(error.message));
     }
