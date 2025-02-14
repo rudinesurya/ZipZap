@@ -7,6 +7,8 @@ async function bootstrap() {
   // Set a global prefix for all routes
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe());
+  // Enable CORS with default settings
+  app.enableCors();
   await app.listen(process.env.PORT ?? 8080);
 }
 
