@@ -11,21 +11,21 @@ const selectApiBaseUrl = (state: RootState) => state.config.apiBaseUrl;
 // Selector to get the auth token from the auth slice.
 const selectAuthToken = (state: RootState) => state.auth.token;
 
-const fetchUserProfileApi = (apiBaseUrl: string, token: string) => {
-    return fetch(`${apiBaseUrl}/api/users/profile`, {
+const fetchUserProfileApi = async (apiBaseUrl: string, token: string) => {
+    const response = await fetch(`${apiBaseUrl}/api/users/profile`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
         },
-    }).then((res) => {
-        if (!res.ok) {
-            return res.json().then((data) => {
-                throw new Error(data.message || 'Failed to fetch user profile');
-            });
-        }
-        return res.json();
     });
+
+    if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to fetch user profile');
+    }
+
+    return response.json();
 }
 
 function* fetchUserProfileSaga() {

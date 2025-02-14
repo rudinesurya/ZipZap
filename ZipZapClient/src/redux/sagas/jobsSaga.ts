@@ -22,16 +22,16 @@ import { RootState } from '../store';
 const selectApiBaseUrl = (state: RootState) => state.config.apiBaseUrl;
 
 // Fetch all jobs API call
-const fetchJobsApi = (apiBaseUrl: string) => {
-    return fetch(`${apiBaseUrl}/api/jobs`).then((res) => {
-        if (!res.ok) {
-            return res.json().then((data) => {
-                throw new Error(data.message || 'Failed to fetch jobs');
-            });
-        }
-        return res.json();
-    });
-}
+const fetchJobsApi = async (apiBaseUrl: string) => {
+    const response = await fetch(`${apiBaseUrl}/api/jobs`);
+
+    if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to fetch jobs');
+    }
+
+    return response.json();
+};
 
 function* fetchJobsSaga() {
     try {
@@ -44,15 +44,15 @@ function* fetchJobsSaga() {
 }
 
 // Fetch single job API call
-const fetchJobApi = (apiBaseUrl: string, jobId: string) => {
-    return fetch(`${apiBaseUrl}/api/jobs/${jobId}`).then((res) => {
-        if (!res.ok) {
-            return res.json().then((data) => {
-                throw new Error(data.message || 'Failed to fetch job');
-            });
-        }
-        return res.json();
-    });
+const fetchJobApi = async (apiBaseUrl: string, jobId: string) => {
+    const response = await fetch(`${apiBaseUrl}/api/jobs/${jobId}`);
+
+    if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to fetch job');
+    }
+
+    return response.json();
 }
 
 function* fetchJobSaga(action: { payload: string; type: string }) {
@@ -66,22 +66,22 @@ function* fetchJobSaga(action: { payload: string; type: string }) {
 }
 
 // Create job API call
-const createJobApi = (apiBaseUrl: string, payload: any, token: string) => {
-    return fetch(`${apiBaseUrl}/api/jobs`, {
+const createJobApi = async (apiBaseUrl: string, payload: any, token: string) => {
+    const response = await fetch(`${apiBaseUrl}/api/jobs`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
-    }).then((res) => {
-        if (!res.ok) {
-            return res.json().then((data) => {
-                throw new Error(data.message || 'Failed to create job');
-            });
-        }
-        return res.json();
     });
+
+    if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to create job');
+    }
+
+    return response.json();
 }
 
 function* createJobSaga(action: { payload: { data: any; token: string }; type: string }) {
@@ -95,22 +95,22 @@ function* createJobSaga(action: { payload: { data: any; token: string }; type: s
 }
 
 // Update job API call
-const updateJobApi = (apiBaseUrl: string, jobId: string, payload: any, token: string) => {
-    return fetch(`${apiBaseUrl}/api/jobs/${jobId}`, {
+const updateJobApi = async (apiBaseUrl: string, jobId: string, payload: any, token: string) => {
+    const response = await fetch(`${apiBaseUrl}/api/jobs/${jobId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
-    }).then((res) => {
-        if (!res.ok) {
-            return res.json().then((data) => {
-                throw new Error(data.message || 'Failed to update job');
-            });
-        }
-        return res.json();
     });
+
+    if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to update job');
+    }
+
+    return response.json();
 }
 
 function* updateJobSaga(action: { payload: { jobId: string; data: any; token: string }; type: string }) {
@@ -124,20 +124,20 @@ function* updateJobSaga(action: { payload: { jobId: string; data: any; token: st
 }
 
 // Delete job API call
-const deleteJobApi = (apiBaseUrl: string, jobId: string, token: string) => {
-    return fetch(`${apiBaseUrl}/api/jobs/${jobId}`, {
+const deleteJobApi = async (apiBaseUrl: string, jobId: string, token: string) => {
+    const response = await fetch(`${apiBaseUrl}/api/jobs/${jobId}`, {
         method: 'DELETE',
         headers: {
             Authorization: `Bearer ${token}`,
         },
-    }).then((res) => {
-        if (!res.ok) {
-            return res.json().then((data) => {
-                throw new Error(data.message || 'Failed to delete job');
-            });
-        }
-        return res.json();
     });
+
+    if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to delete job');
+    }
+
+    return response.json();
 }
 
 function* deleteJobSaga(action: { payload: { jobId: string; token: string }; type: string }) {

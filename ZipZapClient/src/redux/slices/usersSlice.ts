@@ -10,13 +10,13 @@ export interface UserProfile {
 }
 
 interface UserState {
-    profile: UserProfile | null;
+    userProfile: UserProfile | null;
     loading: boolean;
     error?: string;
 }
 
 const initialState: UserState = {
-    profile: null,
+    userProfile: null,
     loading: false,
     error: undefined,
 };
@@ -30,7 +30,7 @@ const usersSlice = createSlice({
             state.error = undefined;
         },
         fetchUserProfileSuccess(state, action: PayloadAction<UserProfile>) {
-            state.profile = action.payload;
+            state.userProfile = action.payload;
             state.loading = false;
         },
         fetchUserProfileFailure(state, action: PayloadAction<string>) {
@@ -39,9 +39,9 @@ const usersSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        // When the auth logout action is dispatched, also clear the user profile
+        // When the auth logout action is dispatched, also clear the user userProfile
         builder.addCase(logout, (state) => {
-            state.profile = null;
+            state.userProfile = null;
         });
     },
 });
