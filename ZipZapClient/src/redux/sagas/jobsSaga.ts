@@ -22,7 +22,7 @@ import { RootState } from '../store';
 const selectApiBaseUrl = (state: RootState) => state.config.apiBaseUrl;
 
 // Fetch all jobs API call
-function fetchJobsApi(apiBaseUrl: string) {
+const fetchJobsApi = (apiBaseUrl: string) => {
     return fetch(`${apiBaseUrl}/api/jobs`).then((res) => {
         if (!res.ok) {
             return res.json().then((data) => {
@@ -44,7 +44,7 @@ function* fetchJobsSaga() {
 }
 
 // Fetch single job API call
-function fetchJobApi(apiBaseUrl: string, jobId: string) {
+const fetchJobApi = (apiBaseUrl: string, jobId: string) => {
     return fetch(`${apiBaseUrl}/api/jobs/${jobId}`).then((res) => {
         if (!res.ok) {
             return res.json().then((data) => {
@@ -66,7 +66,7 @@ function* fetchJobSaga(action: { payload: string; type: string }) {
 }
 
 // Create job API call
-function createJobApi(apiBaseUrl: string, payload: any, token: string) {
+const createJobApi = (apiBaseUrl: string, payload: any, token: string) => {
     return fetch(`${apiBaseUrl}/api/jobs`, {
         method: 'POST',
         headers: {
@@ -95,7 +95,7 @@ function* createJobSaga(action: { payload: { data: any; token: string }; type: s
 }
 
 // Update job API call
-function updateJobApi(apiBaseUrl: string, jobId: string, payload: any, token: string) {
+const updateJobApi = (apiBaseUrl: string, jobId: string, payload: any, token: string) => {
     return fetch(`${apiBaseUrl}/api/jobs/${jobId}`, {
         method: 'PUT',
         headers: {
@@ -124,7 +124,7 @@ function* updateJobSaga(action: { payload: { jobId: string; data: any; token: st
 }
 
 // Delete job API call
-function deleteJobApi(apiBaseUrl: string, jobId: string, token: string) {
+const deleteJobApi = (apiBaseUrl: string, jobId: string, token: string) => {
     return fetch(`${apiBaseUrl}/api/jobs/${jobId}`, {
         method: 'DELETE',
         headers: {
